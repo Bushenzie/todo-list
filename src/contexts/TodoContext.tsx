@@ -1,17 +1,9 @@
 import { createContext, useContext, useReducer } from "react";
+import { TodoItem,Priority } from "../types";
 
 interface ITodoContext {
     items: TodoItem[];
     dispatch: (action: TodoAction) => void
-}
-const TodoContext = createContext<ITodoContext>({items: [], dispatch: () => {}});
-
-interface TodoItem {
-    id: string;
-    value: string;
-    priority: Priority;
-    tags?: string[];
-    due?: Date;
 }
 
 type TodoAction = {
@@ -19,13 +11,9 @@ type TodoAction = {
     value: string;
 };
 
-enum Priority {
-    Low = 1,
-    Medium,
-    High,
-}
+const TodoContext = createContext<ITodoContext>({items: [], dispatch: () => {}});
 
-function reducer(state: object, action: TodoAction) {
+function reducer(state: Array<TodoItem>, action: TodoAction) {
     let item: TodoItem;
     switch (action.type) {
         case "add":
@@ -39,9 +27,10 @@ function reducer(state: object, action: TodoAction) {
             }
             return [item]
         case "edit":
+            
             break;
         case "remove":
-            break;
+            return (state.filter((item) => item.id !== action.value));
         default:
             return state;
     }
