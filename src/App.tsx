@@ -1,4 +1,5 @@
 import { useReducer, useState } from "react"
+import "./index.css"
 
 enum Priority {
   Low = 1,
@@ -53,7 +54,7 @@ function App() {
 
   return (
       <>
-          <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)}/>
+          <input type="text" className="px-20" value={inputValue} onChange={e => setInputValue(e.target.value)}/>
           <button onClick={onAddClick}>Add</button>
 
           <ul>
