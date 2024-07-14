@@ -57,40 +57,17 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
         setEditNameInput(e.target.value);
     }
 
-    async function onClickEditTodoNameBtn(e) {
-        const editedItem = await editItem({
-            value: editNameInput,
-        });
-        todos.dispatch({
-            type: "edit",
-            value: editedItem,
-        });
-
-        setEditName(false);
-    }
-
     //Edit priority
     function onClickEditPriority(e) {
         setEditPriority(true);
     }
 
-    async function onChangeEditPriority(e) {
+    async function onClickEdit(e,editKey,editValue) {
+
         const editedItem = await editItem({
-            priority: Number(e.target.value),
-        });
-        todos.dispatch({
-            type: "edit",
-            value: editedItem,
+            [editKey]: editValue,
         });
 
-        setEditPriority(false);
-    }
-
-    //Edit completed
-    async function onClickComplete(e) {
-        const editedItem = await editItem({
-            completed: !item.completed
-        });
         todos.dispatch({
             type: "edit",
             value: editedItem,
@@ -106,7 +83,12 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                             value={editNameInput}
                             onChange={onChangeEditTodoName}
                         />
-                        <Button.Secondary onClick={onClickEditTodoNameBtn}>
+                        <Button.Secondary
+                            onClick={(e) => {
+                                onClickEdit(e, "value", editNameInput)
+                                setEditName(false);
+                            }}
+                        >
                             <RiEditFill />
                         </Button.Secondary>
                     </div>
@@ -125,7 +107,10 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                         <Select
                             name="Priority"
                             value={item.priority}
-                            onChange={onChangeEditPriority}
+                            onChange={(e) => {
+                                onClickEdit(e,"priority",Number(e.target.value))
+                                setEditPriority(false);
+                            }}
                         >
                             <option value="1">Low</option>
                             <option value="2">Medium</option>
@@ -151,7 +136,11 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                 <Button.Danger onClick={onClickRemove}>
                     <RiDeleteBin6Fill />
                 </Button.Danger>
-                <Button.Secondary onClick={onClickComplete}>
+                <Button.Secondary
+                    onClick={(e) =>
+                        onClickEdit(e, "completed", !item.completed)
+                    }
+                >
                     {item.completed ? <RiCloseFill /> : <RiCheckFill />}
                 </Button.Secondary>
             </div>
