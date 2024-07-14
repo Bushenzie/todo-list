@@ -76,6 +76,41 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
     return (
         <div className="flex justify-between items-center">
             <div className="text-wrapper">
+                <span className="text-sm flex items-center text-gray-500">
+                    {editTags ? (
+                        <div className="flex">
+                            <Input
+                                value={editTagsInput}
+                                onChange={(e) => setEditTagsInput(e.target.value)}
+                            />
+                            <Button.Secondary
+                                onClick={(e) => {
+                                    onClickEdit(
+                                        e,
+                                        "tags",
+                                        editTagsInput.trim()
+                                            ? editTagsInput.trim().split(",")
+                                            : []
+                                    );
+                                    setEditTags(false);
+                                }}
+                            >
+                                <RiEditFill />
+                            </Button.Secondary>
+                        </div>
+                    ) : (
+                        <span
+                            className="text-sm cursor-pointer"
+                            onClick={() => setEditTags(true)}
+                        >
+                            {item.tags.length === 0 ? (
+                                <>No tags</>
+                            ) : (
+                                <>{formatter.format(item.tags)}</>
+                            )}
+                        </span>
+                    )}
+                </span>
                 {editName ? (
                     <div className="flex">
                         <Input
@@ -101,8 +136,7 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                         {item.value}
                     </h1>
                 )}
-                <span className="text-lg text-gray-500 flex gap-2 items-center">
-                    Priority:
+                <span className="text-xs md:text-lg text-gray-500 flex gap-2">
                     {editPriority ? (
                         <div className="flex">
                             <Select
@@ -124,7 +158,7 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                         </div>
                     ) : (
                         <span
-                            className="text-lg text-gray-500 cursor-pointer"
+                            className="text-xs md:text-lg text-gray-500 cursor-pointer"
                             onClick={() => setEditPriority(true)}
                         >
                             {item.priority === 3
@@ -133,40 +167,7 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                                 ? "Medium"
                                 : item.priority === 1
                                 ? "Low"
-                                : "Not defined"}
-                        </span>
-                    )}
-                    | Tags:
-                    {editTags ? (
-                        <div className="flex">
-                            <Input
-                                value={editTagsInput}
-                                onChange={(e) =>
-                                    setEditTagsInput(e.target.value)
-                                }
-                            />
-                            <Button.Secondary
-                                onClick={(e) => {
-                                    onClickEdit(
-                                        e,
-                                        "tags",
-                                        editTagsInput.trim()
-                                            ? editTagsInput.trim().split(",")
-                                            : []
-                                    );
-                                    setEditTags(false);
-                                }}
-                            >
-                                <RiEditFill />
-                            </Button.Secondary>
-                        </div>
-                    ) : (
-                        <span onClick={() => setEditTags(true)}>
-                            {item.tags.length === 0? (
-                                <>Not Defined</>
-                            ) : (
-                                <>{formatter.format(item.tags)}</>
-                            )}
+                                : "No priority"}
                         </span>
                     )}
                 </span>
