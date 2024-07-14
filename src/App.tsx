@@ -9,7 +9,7 @@ function App() {
   const theme = useTheme();
   const [inputValue,setInputValue] = useState("");
   const [tagsInputValue, setTagsInputValue] = useState("");
-  const [dateInputValue, setDateInputValue] = useState(""); // Dates in js haha
+  const [dateInputValue, setDateInputValue] = useState("");
   const [selectValue,setSelectValue] = useState(0);
 
   useEffect(() => {
@@ -21,10 +21,10 @@ function App() {
   },[todos.items])
 
   function resetValues() {
-    setInputValue("");
-    setTagsInputValue("");  
-    setDateInputValue(new Date(Date.now()).toISOString().split("T")[0]);
-    setSelectValue(0);
+      setInputValue("");
+      setTagsInputValue("");
+      setDateInputValue(new Date(Date.now()).toISOString().split("T")[0]); // Dates in js haha
+      setSelectValue(0);
   }
 
   async function onAddClick(e) {
@@ -37,9 +37,9 @@ function App() {
             },
             body: JSON.stringify({
                 value: inputValue,
-                priority: selectValue,
+                priority: Number(selectValue),
                 due: new Date(dateInputValue),
-                tags: tagsInputValue.split(","),
+                tags: tagsInputValue.trim().length !== 0 ? tagsInputValue.trim().split(",") : [],
                 completed: false,
             }),
         }
