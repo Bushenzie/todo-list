@@ -6,23 +6,23 @@ import { useTodos } from "./contexts/TodoContext";
 function App() {
   const todos = useTodos();
   const [inputValue,setInputValue] = useState("");
-  const [tagsInputValue,setTagsInputValue] = useState("");
+  const [tagsInputValue, setTagsInputValue] = useState("");
+  const [dateInputValue, setDateInputValue] = useState(""); // Dates in js haha
   const [selectValue,setSelectValue] = useState(0);
+
+  useEffect(() => {
+    resetValues()
+  },[])
 
   useEffect(() => {
     if(!Array.isArray(todos.items)) return;
   },[todos.items])
 
-  function onPrioritySelect(e) {
-    setSelectValue(Number(e.target.value))
-  }
-
-  function onInputChange(e) {
-    setInputValue(e.target.value)
-  }
-
-  function onTagsInputChange(e) {
-    setTagsInputValue(e.target.value);
+  function resetValues() {
+    setInputValue("");
+    setTagsInputValue("");
+    setDateInputValue(new Date(Date.now()).toISOString().split("T")[0]);
+    setSelectValue(0);
   }
 
   async function onAddClick(e) {
@@ -36,6 +36,7 @@ function App() {
             body: JSON.stringify({
                 value: inputValue,
                 priority: selectValue,
+                due: dateInputValue,
                 tags: tagsInputValue.split(","),
                 completed: false,
             }),
@@ -47,10 +48,9 @@ function App() {
         type: "add",
         value: newItem,
     });
-
-    setInputValue("")
-    setSelectValue(0)
+    resetValues();
   }
+  
   return (
       <div>
           <div className="heading flex items-center justify-center mt-4 md:mt-16">
@@ -59,24 +59,30 @@ function App() {
           <div className="top w-full flex-1 grow flex flex-col items justify-center p-4 gap-2 md:flex-row md:px-16 md:py-10">
               <Input
                   value={inputValue}
-                  onChange={onInputChange}
+                  onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Add Todo item"
+                  
               />
               <Input
                   value={tagsInputValue}
-                  onChange={onTagsInputChange}
+                  onChange={(e) => setTagsInputValue(e.target.value)}
                   placeholder='Tags with "," separated.'
               />
               <Select
                   name="Priority"
                   value={selectValue}
-                  onChange={onPrioritySelect}
+                  onChange={(e) => setSelectValue(e.target.value)}
               >
                   <option value="1">Low</option>
                   <option value="2">Medium</option>
                   <option value="3">High</option>
               </Select>
-              <Button.Primary onClick={onAddClick}>Add</Button.Primary>
+              <Input 
+                type="date" 
+                value={dateInputValue} 
+                onChange={(e) => {setDateInputValue(e.target.value)}}
+              />
+              <Button.Primary onClick={onAddClick} disabled={inputValue.length === 0}>Add</Button.Primary>
           </div>
 
           <ul className="flex flex-col gap-4 flex-1 mx-8 my-8 md:mx-32 lg:mx-64">

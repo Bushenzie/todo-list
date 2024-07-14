@@ -81,7 +81,9 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                         <div className="flex">
                             <Input
                                 value={editTagsInput}
-                                onChange={(e) => setEditTagsInput(e.target.value)}
+                                onChange={(e) =>
+                                    setEditTagsInput(e.target.value)
+                                }
                             />
                             <Button.Secondary
                                 onClick={(e) => {
@@ -172,17 +174,20 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                     )}
                 </span>
             </div>
-            <div className="flex gap-4">
-                <Button.Danger onClick={onClickRemove}>
-                    <RiDeleteBin6Fill />
-                </Button.Danger>
-                <Button.Secondary
-                    onClick={(e) =>
-                        onClickEdit(e, "completed", !item.completed)
-                    }
-                >
-                    {item.completed ? <RiCloseFill /> : <RiCheckFill />}
-                </Button.Secondary>
+            <div className="flex flex-col">
+                <div className="flex gap-4">
+                    <Button.Danger onClick={onClickRemove}>
+                        <RiDeleteBin6Fill />
+                    </Button.Danger>
+                    <Button.Secondary
+                        onClick={(e) =>
+                            onClickEdit(e, "completed", !item.completed)
+                        }
+                    >
+                        {item.completed ? <RiCloseFill /> : <RiCheckFill />}
+                    </Button.Secondary>
+                </div>
+                <span>{new Date(Number(item.due)).toISOString().split("T")[0]}</span>
             </div>
         </div>
     );
