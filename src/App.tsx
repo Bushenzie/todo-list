@@ -89,7 +89,7 @@ function App() {
               <Input
                   value={tagsInputValue}
                   onChange={(e) => setTagsInputValue(e.target.value)}
-                  placeholder='Tags with "," separated.'
+                  placeholder='Tags "," separated.'
               />
               <Select
                   name="Priority"
