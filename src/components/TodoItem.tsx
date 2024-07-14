@@ -1,15 +1,21 @@
 import { useState } from "react";
 import { useTodos } from "../contexts/TodoContext.tsx";
+import {
+    RiCheckFill,
+    RiCloseFill,
+    RiDeleteBin6Fill,
+    RiEditFill,
+} from "react-icons/ri";
+
 import {TodoItem} from "../types.ts"
 import Button from "./Button"
 import Input from "./Input.tsx";
 import Select from "./Select.tsx";
 
 function TodoItemComponent({ item }: { item: TodoItem }) {
-
     const todos = useTodos();
     const [editName, setEditName] = useState(false);
-    const [editNameInput,setEditNameInput] = useState(item.value);
+    const [editNameInput, setEditNameInput] = useState(item.value);
 
     const [editPriority, setEditPriority] = useState(false);
 
@@ -53,15 +59,15 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
 
     async function onClickEditTodoNameBtn(e) {
         const editedItem = await editItem({
-            value: editNameInput
+            value: editNameInput,
         });
         todos.dispatch({
             type: "edit",
             value: editedItem,
         });
 
-        setEditName(false)
-    }   
+        setEditName(false);
+    }
 
     //Edit priority
     function onClickEditPriority(e) {
@@ -70,7 +76,7 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
 
     async function onChangeEditPriority(e) {
         const editedItem = await editItem({
-            priority: Number(e.target.value)
+            priority: Number(e.target.value),
         });
         todos.dispatch({
             type: "edit",
@@ -78,6 +84,17 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
         });
 
         setEditPriority(false);
+    }
+
+    //Edit completed
+    async function onClickComplete(e) {
+        const editedItem = await editItem({
+            completed: !item.completed
+        });
+        todos.dispatch({
+            type: "edit",
+            value: editedItem,
+        });
     }
 
     return (
@@ -90,12 +107,14 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                             onChange={onChangeEditTodoName}
                         />
                         <Button.Secondary onClick={onClickEditTodoNameBtn}>
-                            Confirm
+                            <RiEditFill />
                         </Button.Secondary>
                     </div>
                 ) : (
                     <h1
-                        className="font-bold text-xl capitalize"
+                        className={`font-bold text-xl capitalize ${
+                            item.completed && "line-through"
+                        }`}
                         onClick={onClickEditTodoName}
                     >
                         {item.value}
@@ -129,7 +148,12 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                 )}
             </div>
             <div className="flex gap-4">
-                <Button.Danger onClick={onClickRemove}>Remove</Button.Danger>
+                <Button.Danger onClick={onClickRemove}>
+                    <RiDeleteBin6Fill />
+                </Button.Danger>
+                <Button.Secondary onClick={onClickComplete}>
+                    {item.completed ? <RiCloseFill /> : <RiCheckFill />}
+                </Button.Secondary>
             </div>
         </div>
     );
