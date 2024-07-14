@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useReducer } from "react";
-import { TodoItem,Priority } from "../types";
+import { TodoItem } from "../types";
 
 interface ITodoContext {
     items: TodoItem[];
