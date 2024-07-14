@@ -8,7 +8,7 @@ interface ITodoContext {
 
 type TodoAction = {
     type: "add" | "edit" | "remove";
-    value: string;
+    value: TodoItem;
 };
 
 const TodoContext = createContext<ITodoContext>({items: [], dispatch: () => {}});
@@ -19,18 +19,23 @@ function reducer(state: Array<TodoItem>, action: TodoAction) {
         case "add":
             item = {
                 id: Date.now().toString(),
-                value: action.value,
-                priority: Priority.Low,
+                value: action.value.value,
+                priority: action.value.priority,
             };
             if(Array.isArray(state)) {
                 return [...state, item];
             }
             return [item]
-        case "edit":
-            
+        case "edit":    
+            return (state.map((item) => {
+                if(item.id === action.value.id) {
+                    item.value = action.value.value
+                }
+                return item;
+            }))
             break;
         case "remove":
-            return (state.filter((item) => item.id !== action.value));
+            return (state.filter((item) => item.id !== action.value.id));
         default:
             return state;
     }

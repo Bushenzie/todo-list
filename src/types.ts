@@ -1,6 +1,7 @@
 
 export enum Priority {
-    Low = 1,
+    NotDefined = 0,
+    Low,
     Medium,
     High,
 }
