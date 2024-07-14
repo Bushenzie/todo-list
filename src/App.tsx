@@ -55,7 +55,7 @@ function App() {
   
   return (
       <div
-          className={`relative bg-neutral-50 dark:bg-stone-900 ${
+          className={`relative bg-neutral-50 ${
               theme.theme === "dark" ? "bg-stone-900" : "bg-neutral-50"
           }`}
       >
