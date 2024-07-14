@@ -12,6 +12,9 @@ function App() {
     setSelectValue(Number(e.target.value))
   }
 
+  function onInputChange(e) {
+    setInputValue(e.target.value)
+  }
 
   function onAddClick(e) {
     todos.dispatch({
@@ -21,6 +24,8 @@ function App() {
           priority: selectValue
         },
     });
+    setInputValue("")
+    setSelectValue(0)
   }
 
   return (
@@ -28,7 +33,7 @@ function App() {
           <div className="top flex items-center justify-center p-12 gap-2">
               <Input
                   value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
+                  onChange={onInputChange}
                   placeholder="Add Todo item"
               />
               <Select
@@ -44,7 +49,6 @@ function App() {
           </div>
 
           <ul className="mx-64 flex flex-col gap-4">
-              
               {todos.items.map((todoItem, index) => (
                   <TodoItem item={todoItem} key={todoItem.id} />
               ))}

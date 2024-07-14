@@ -29,7 +29,7 @@ function reducer(state: Array<TodoItem>, action: TodoAction) {
         case "edit":    
             return (state.map((item) => {
                 if(item.id === action.value.id) {
-                    item.value = action.value.value
+                    item = {...item,...action.value}
                 }
                 return item;
             }))
