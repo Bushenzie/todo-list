@@ -45,8 +45,8 @@ function App() {
     setSelectValue(0)
   }
   return (
-      <div>
-          <div className="top flex items-center justify-center p-12 gap-2">
+      <div className="">
+          <div className="top w-full flex-1 grow flex flex-col items justify-center p-4 gap-2 md:flex-row md:p-16">
               <Input
                   value={inputValue}
                   onChange={onInputChange}
@@ -64,7 +64,7 @@ function App() {
               <Button.Primary onClick={onAddClick}>Add</Button.Primary>
           </div>
 
-          <ul className="mx-64 flex flex-col gap-4">
+          <ul className="flex flex-col gap-4 flex-1 mx-8 md:mx-32 lg:mx-64">
               {todos.items.map((todoItem) => (
                   <TodoItem item={todoItem} key={todoItem.id} />
               ))}
