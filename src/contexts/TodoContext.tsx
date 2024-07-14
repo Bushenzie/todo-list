@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 import { TodoItem,Priority } from "../types";
 
 interface ITodoContext {
@@ -7,41 +7,50 @@ interface ITodoContext {
 }
 
 type TodoAction = {
-    type: "add" | "edit" | "remove";
+    type: "set" | "add" | "edit" | "remove";
     value: TodoItem;
 };
 
 const TodoContext = createContext<ITodoContext>({items: [], dispatch: () => {}});
 
 function reducer(state: Array<TodoItem>, action: TodoAction) {
-    let item: TodoItem;
-    switch (action.type) {
-        case "add":
-            item = {
-                id: Date.now().toString(),
-                value: action.value.value,
-                priority: action.value.priority,
-            };
-            if(Array.isArray(state)) {
-                return [...state, item];
-            }
-            return [item]
-        case "edit":    
-            return (state.map((item) => {
-                if(item.id === action.value.id) {
-                    item = {...item,...action.value}
-                }
-                return item;
-            }))
-            break;
-        case "remove":
-            return (state.filter((item) => item.id !== action.value.id));
-        default:
-            return state;
+    if(action.type === "set") {
+        return action.value;
     }
+    if(action.type === "add") {
+        return [...state, action.value];
+    }
+    if(action.type === "edit") {
+        return (state.map((item) => {
+            if(item.id === action.value.id) {
+                return action.value;
+            }
+            return item;
+        }));
+    }
+    if(action.type === "remove") {
+        return (state.filter(item => item.id !== action.value.id))
+    }
+
+    return state
 }
 export function TodoContextProvider(props: {children: React.ReactNode}) {
     const [todoItems, dispatch] = useReducer(reducer, []);
+
+    useEffect(() => {
+        async function setData() {
+            const resp = await fetch(
+                "https://6693a4cac6be000fa07cc618.mockapi.io/api/todos"
+            );
+            const json = await resp.json();
+            dispatch({
+                type: "set",
+                value: json
+            })
+        }
+        setData();
+    },[]);
+
 
     return (
         <TodoContext.Provider value={{items: todoItems ,dispatch}}>

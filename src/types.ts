@@ -10,6 +10,7 @@ export interface TodoItem {
     id: string;
     value: string;
     priority: Priority;
+    completed: boolean;
     tags?: string[];
     due?: Date;
 }

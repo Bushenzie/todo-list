@@ -13,15 +13,33 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
 
     const [editPriority, setEditPriority] = useState(false);
 
-    function onClickRemove() {
+    async function onClickRemove() {
+        const resp = await fetch(
+            `https://6693a4cac6be000fa07cc618.mockapi.io/api/todos/${item.id}`,
+            {
+                method: "DELETE",
+            }
+        );
+        const deletedItem = await resp.json();
         todos.dispatch({
             type: "remove",
-            value: {
-                id: item.id,
-                value: "",
-                priority: 0
+            value: deletedItem,
+        });
+    }
+
+    async function editItem(propsToEdit: object) {
+        const resp = await fetch(
+            `https://6693a4cac6be000fa07cc618.mockapi.io/api/todos/${item.id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-type": "application/json",
+                },
+                body: JSON.stringify({ ...item, ...propsToEdit }),
             }
-        })
+        );
+        const json = await resp.json();
+        return json;
     }
 
     //Edit name
@@ -33,14 +51,13 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
         setEditNameInput(e.target.value);
     }
 
-    function onClickEditTodoNameBtn(e) {
+    async function onClickEditTodoNameBtn(e) {
+        const editedItem = await editItem({
+            value: editNameInput
+        });
         todos.dispatch({
             type: "edit",
-            value: {
-                id: item.id,
-                value: editNameInput,
-                priority: item.priority
-            },
+            value: editedItem,
         });
 
         setEditName(false)
@@ -51,14 +68,13 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
         setEditPriority(true);
     }
 
-    function onChangeEditPriority(e) {
+    async function onChangeEditPriority(e) {
+        const editedItem = await editItem({
+            priority: Number(e.target.value)
+        });
         todos.dispatch({
             type: "edit",
-            value: {
-                id: item.id,
-                value: item.value,
-                priority: Number(e.target.value),
-            },
+            value: editedItem,
         });
 
         setEditPriority(false);
@@ -113,7 +129,7 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                 )}
             </div>
             <div className="flex gap-4">
-                <Button.Danger onClick={onClickRemove}>Smazat</Button.Danger>
+                <Button.Danger onClick={onClickRemove}>Remove</Button.Danger>
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button,Input,TodoItem,Select } from "./components";
 import "./index.css"
 import { useTodos } from "./contexts/TodoContext";
@@ -8,6 +8,10 @@ function App() {
   const [inputValue,setInputValue] = useState("");
   const [selectValue,setSelectValue] = useState(0);
 
+  useEffect(() => {
+    if(!Array.isArray(todos.items)) return;
+  },[todos.items])
+
   function onPrioritySelect(e) {
     setSelectValue(Number(e.target.value))
   }
@@ -16,18 +20,30 @@ function App() {
     setInputValue(e.target.value)
   }
 
-  function onAddClick(e) {
+  async function onAddClick(e) {
+    const resp = await fetch(
+        "https://6693a4cac6be000fa07cc618.mockapi.io/api/todos",
+        {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json"
+            },
+            body: JSON.stringify({
+                value: inputValue,
+                priority: selectValue,
+                completed: false,
+            }),
+        }
+    );
+    const newItem = await resp.json();
+
     todos.dispatch({
         type: "add",
-        value: {
-          value: inputValue,
-          priority: selectValue
-        },
+        value: newItem,
     });
     setInputValue("")
     setSelectValue(0)
   }
-
   return (
       <div>
           <div className="top flex items-center justify-center p-12 gap-2">
@@ -49,7 +65,7 @@ function App() {
           </div>
 
           <ul className="mx-64 flex flex-col gap-4">
-              {todos.items.map((todoItem, index) => (
+              {todos.items.map((todoItem) => (
                   <TodoItem item={todoItem} key={todoItem.id} />
               ))}
           </ul>
