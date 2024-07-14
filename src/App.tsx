@@ -20,7 +20,7 @@ function App() {
 
   function resetValues() {
     setInputValue("");
-    setTagsInputValue("");
+    setTagsInputValue("");  
     setDateInputValue(new Date(Date.now()).toISOString().split("T")[0]);
     setSelectValue(0);
   }
@@ -36,7 +36,7 @@ function App() {
             body: JSON.stringify({
                 value: inputValue,
                 priority: selectValue,
-                due: dateInputValue,
+                due: new Date(dateInputValue),
                 tags: tagsInputValue.split(","),
                 completed: false,
             }),
