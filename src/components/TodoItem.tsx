@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTodos } from "../contexts/TodoContext.tsx";
+import { useTheme } from "../contexts/ThemeContext.tsx";
 import {
     RiCheckFill,
     RiCloseFill,
@@ -14,6 +15,7 @@ import Select from "./Select.tsx";
 
 function TodoItemComponent({ item }: { item: TodoItem }) {
     const todos = useTodos();
+    const theme = useTheme();
     const date = new Date(item.due).toISOString();
     const [editName, setEditName] = useState(false);
     const [editPriority, setEditPriority] = useState(false);
@@ -68,11 +70,17 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
     }
 
     return (
-        <div className="flex justify-between items-center">
+        <div
+            className={`flex justify-between items-center border-2 ${
+                theme.theme === "dark"
+                    ? "border-neutral-50 bg-stone-800"
+                    : "border-stone-900 "
+            } p-4 rounded-md`}
+        >
             <div className="text-wrapper">
                 <span className="text-sm flex items-center text-gray-500">
                     {editTags ? (
-                        <div className="flex">
+                        <div className="flex gap-2 items">
                             <Input
                                 value={editTagsInput}
                                 onChange={(e) =>
@@ -107,9 +115,9 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                         </span>
                     )}
                 </span>
-                <div className="flex flex-col md:flex-row md:gap-2">
+                <div className="flex flex-col md:items-center md:flex-row md:gap-2">
                     {editName ? (
-                        <div className="flex">
+                        <div className="flex gap-2">
                             <Input
                                 value={editNameInput}
                                 onChange={(e) =>
@@ -129,15 +137,26 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                         <h1
                             className={`font-bold cursor-pointer text-xl capitalize ${
                                 item.completed && "line-through"
-                            }`}
+                            }
+                                ${
+                                    theme.theme === "dark"
+                                        ? "text-neutral-50"
+                                        : "text-stone-900"
+                                }`}
                             onClick={() => setEditName(true)}
                         >
                             {item.value}
                         </h1>
                     )}
-                    <span className="text-xs md:text-lg text-gray-500 flex gap-2">
+                    <span
+                        className={`text-xs md:text-lg flex gap-2 ${
+                            theme.theme === "dark"
+                                ? "text-neutral-400"
+                                : "text-gray-500"
+                        }`}
+                    >
                         {editPriority ? (
-                            <div className="flex">
+                            <div className="flex gap-2">
                                 <Select
                                     name="Priority"
                                     value={item.priority}
@@ -157,7 +176,11 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                             </div>
                         ) : (
                             <span
-                                className="text-lg md:text-lg text-gray-500 cursor-pointer"
+                                className={`text-lg md:text-lg cursor-pointer ${
+                                    theme.theme === "dark"
+                                        ? "text-neutral-400"
+                                        : "text-gray-500"
+                                }`}
                                 onClick={() => setEditPriority(true)}
                             >
                                 (
@@ -177,7 +200,7 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                     className={`${
                         Date.parse(date) <= Date.now()
                             ? "text-red-600"
-                            : "text-gray-600"
+                            : "text-gray-500"
                     }`}
                 >
                     {date.split("T")[0]}
@@ -188,13 +211,13 @@ function TodoItemComponent({ item }: { item: TodoItem }) {
                     <Button.Danger onClick={onClickRemove}>
                         <RiDeleteBin6Fill />
                     </Button.Danger>
-                    <Button.Secondary
+                    <Button.Primary
                         onClick={(e) =>
                             onClickEdit(e, "completed", !item.completed)
                         }
                     >
                         {item.completed ? <RiCloseFill /> : <RiCheckFill />}
-                    </Button.Secondary>
+                    </Button.Primary>
                 </div>
             </div>
         </div>
