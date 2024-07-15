@@ -19,3 +19,10 @@
 - Clone this repo
 - Install all dependencies using `npm install`
 - Start dev server using `npm run dev`
+
+## Missed things to fix/implement
+
+- [ ] Add multiple Todo lists 
+    - Another table in MockAPI and then connect it using ID to todo items table
+- [ ] Connect Theme switching to Local/Session storage
+- [ ] Edit Due Date
